@@ -51,6 +51,37 @@ body.birthday-locked #main-scroll-container {
     padding: 8px 18px !important;
   }
 }
+
+/* Mobile smooth sliding and scrolling */
+html {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch;
+}
+body {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+#main-scroll-container {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  html, body {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+  #main-scroll-container {
+    scroll-behavior: smooth !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: y proximity;
+  }
+  #section-1, #section-2, #section-3, #section-4, #section-5, #section-6, #section-7 {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}
 </style>
 <script>
 (function() {
@@ -99,6 +130,14 @@ body.birthday-locked #main-scroll-container {
           s2.scrollIntoView({ behavior: 'smooth' });
         }
       }, 150);
+    }
+    if (event.data && event.data.type === 'SCROLL_TO_NEXT_FROM_BOOK') {
+      const s5 = document.getElementById('section-5');
+      if (s5) s5.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (event.data && event.data.type === 'SCROLL_TO_PREV_FROM_BOOK') {
+      const sg = document.getElementById('section-gallery') || document.getElementById('section-3');
+      if (sg) sg.scrollIntoView({ behavior: 'smooth' });
     }
     if (event.data && event.data.type === 'SCROLL_TO_NEXT_SECTION') {
       const s6 = document.getElementById('section-6');

@@ -1186,6 +1186,26 @@
       window.parent.postMessage({ type: 'SCROLL_TO_SECTION_2' }, '*');
     } catch (e) {}
   };
+
+  // Mobile smooth swipe-up gesture to advance to Section 2
+  let bdayTouchStartY = 0;
+  let bdayTouchStartTime = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches.length === 1) {
+      bdayTouchStartY = e.touches[0].clientY;
+      bdayTouchStartTime = Date.now();
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchend', (e) => {
+    if (e.changedTouches && e.changedTouches.length === 1) {
+      const dy = e.changedTouches[0].clientY - bdayTouchStartY;
+      const dt = Date.now() - bdayTouchStartTime;
+      if (dy < -45 && dt < 700) {
+        window.scrollNext();
+      }
+    }
+  }, { passive: true });
 </script>
 
 
