@@ -1,6 +1,14 @@
 # 🎂 Happy Birthday Celebration Website (1:1 Replica)
 
-Yeh website **https://birthday-four.vercel.app/** ka exact replicate kiya gaya complete project hai.
+Yeh website **Happy Birthday Yashika** celebration ka complete 3D animation project hai.
+
+---
+
+## 🌐 Live & Deployment Links
+
+- **GitHub Repository:** [https://github.com/bacchaninishant-debug/happy-birthday-website](https://github.com/bacchaninishant-debug/happy-birthday-website)
+- **Vercel 1-Click Deploy:** [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbacchaninishant-debug%2Fhappy-birthday-website)
+- **Direct Vercel Import:** [https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbacchaninishant-debug%2Fhappy-birthday-website](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fbacchaninishant-debug%2Fhappy-birthday-website)
 
 ---
 
@@ -60,5 +68,6 @@ Aapne kaha tha **"photos last mein dalenge"**, isliye abhi working placeholder/r
 ## 🎵 Song / Music Kaise Badlein?
 - Song file: **`sounds/pipi-song.mp3`**
 - Agar aap koi apna song lagana chahte hain, toh bas apne song file ka naam `pipi-song.mp3` rakh kar `sounds/` folder mein replace kar dein.
+
 
 
