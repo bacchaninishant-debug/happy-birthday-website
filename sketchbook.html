@@ -340,9 +340,10 @@ window.addEventListener('DOMContentLoaded', () => {
     maxShadowOpacity: 0.5,
     usePortrait: false,
     mobileScrollSupport: false,
-    swipeDistance: 20,
+    useMouseEvents: false, // Prevent conflicting internal touch handlers from double-flipping
+    swipeDistance: 0,
     startPage: 0,
-    flippingTime: 650
+    flippingTime: 500
   });
 
   function updateScaleAndCentering() {
@@ -409,24 +410,56 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  let isFlipping = false;
+
   pageFlip.loadFromHTML(document.querySelectorAll('.book-page'));
 
   pageFlip.on('flip', (e) => {
+    isFlipping = false;
     updatePageCounter(e.data);
     updateScaleAndCentering();
   });
 
+  pageFlip.on('changeState', (e) => {
+    if (e.data === 'flipping' || e.data === 'fold_corner') {
+      isFlipping = true;
+    } else if (e.data === 'read') {
+      isFlipping = false;
+    }
+  });
+
   pageFlip.on('init', () => {
+    isFlipping = false;
     updatePageCounter(0);
     updateScaleAndCentering();
   });
 
-  prevBtn.addEventListener('click', () => pageFlip.flipPrev());
-  nextBtn.addEventListener('click', () => pageFlip.flipNext());
+  function safeFlipNext() {
+    if (isFlipping) return;
+    const cur = pageFlip.getCurrentPageIndex();
+    const total = pageFlip.getPageCount();
+    if (cur >= total - 1) return;
+    isFlipping = true;
+    pageFlip.flipNext();
+    setTimeout(() => { isFlipping = false; }, 550);
+  }
+
+  function safeFlipPrev() {
+    if (isFlipping) return;
+    const cur = pageFlip.getCurrentPageIndex();
+    if (cur <= 0) return;
+    isFlipping = true;
+    pageFlip.flipPrev();
+    setTimeout(() => { isFlipping = false; }, 550);
+  }
+
+  prevBtn.addEventListener('click', safeFlipPrev);
+  nextBtn.addEventListener('click', safeFlipNext);
 
   // Mobile smooth touch swipe support:
   // - Swipe Left: Next Page
   // - Swipe Right: Previous Page
+  // - Tap Right/Left half: Next / Prev Page
   // - Swipe Up/Down: Smoothly scroll parent to next/prev section
   let bookTouchStartX = 0;
   let bookTouchStartY = 0;
@@ -442,16 +475,30 @@ window.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('touchend', (e) => {
     if (e.changedTouches && e.changedTouches.length === 1) {
+      // If tapped on a button, let the button handle it
+      if (e.target && (e.target.closest('button') || e.target.closest('.nav-bar'))) {
+        return;
+      }
+
       const dx = e.changedTouches[0].clientX - bookTouchStartX;
       const dy = e.changedTouches[0].clientY - bookTouchStartY;
       const dt = Date.now() - bookTouchStartTime;
 
       // Horizontal swipe to flip pages
-      if (Math.abs(dx) > 35 && Math.abs(dx) > Math.abs(dy) && dt < 600) {
+      if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) && dt < 500) {
         if (dx < 0) {
-          pageFlip.flipNext();
+          safeFlipNext();
         } else {
-          pageFlip.flipPrev();
+          safeFlipPrev();
+        }
+      }
+      // Tap on left/right half of book
+      else if (Math.abs(dx) < 15 && Math.abs(dy) < 15 && dt < 300) {
+        const screenW = window.innerWidth;
+        if (bookTouchStartX > screenW * 0.55) {
+          safeFlipNext();
+        } else if (bookTouchStartX < screenW * 0.45) {
+          safeFlipPrev();
         }
       }
       // Vertical swipe to scroll parent sections

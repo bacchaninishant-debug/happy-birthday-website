@@ -27,8 +27,22 @@
     z-index:0;
     opacity:1;
     pointer-events:none;
+    overflow:hidden;
   }
-  .bg-reveal img{
+  .bg-reveal .bg-backdrop{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 25%;
+    opacity:0.6;
+    filter:blur(36px) brightness(0.45) saturate(1.2);
+    transform:scale(1.2);
+    display:none;
+    z-index:1;
+  }
+  .bg-reveal .bg-main{
     position:absolute;
     inset:0;
     width:100%;
@@ -39,12 +53,37 @@
     transform:scale(1.05);
     filter:saturate(1.05) brightness(0.72) blur(2.5px);
     will-change:transform, filter, opacity;
+    z-index:2;
+  }
+  /* On laptop / desktop wide screens: show full portrait photo in center with ambient blurred backdrop */
+  @media (min-width: 769px) {
+    .bg-reveal .bg-backdrop {
+      display:block;
+      filter:blur(42px) brightness(0.65) saturate(1.2);
+      opacity:0.75;
+      transform:scale(1.25);
+    }
+    .bg-reveal::after {
+      background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 70%, rgba(0,0,0,0.7) 100%);
+    }
+    .bg-reveal .bg-main {
+      object-fit:contain !important;
+      object-position:center center !important;
+      width:100%;
+      height:100%;
+      max-height:100vh;
+      max-height:100dvh;
+      transform:none !important;
+      filter:saturate(1.05) brightness(0.92);
+      opacity:0.95;
+    }
   }
   .bg-reveal::after{
     content:'';
     position:absolute;
     inset:0;
-    background:radial-gradient(circle at 50% 50%, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.85) 78%);
+    background:radial-gradient(circle at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.85) 82%);
+    z-index:3;
   }
 
   /* ---------------- intro counter ---------------- */
@@ -476,7 +515,8 @@
 <body>
 
   <div class="bg-reveal" id="bgReveal">
-    <img id="bgRevealImg" src="/bg2.jpg" alt="Yashika">
+    <img id="bgBackdrop" class="bg-backdrop" src="/bg2.jpg" alt="">
+    <img id="bgRevealImg" class="bg-main" src="/bg2.jpg" alt="Yashika">
   </div>
 
   <audio
@@ -668,6 +708,15 @@
   const BG_MAX_OPACITY = 0.85;
   function revealBackground(){
     bgRevealImg.src = BG_REVEAL_SRC;
+    const bgBackdrop = document.getElementById('bgBackdrop');
+    if (bgBackdrop) {
+      bgBackdrop.src = BG_REVEAL_SRC;
+      gsap.killTweensOf(bgBackdrop);
+      gsap.fromTo(bgBackdrop,
+        { opacity: 0.1 },
+        { opacity: 0.65, duration: 2.4, ease: 'power3.out' }
+      );
+    }
     gsap.killTweensOf([bgReveal, bgRevealImg]);
     gsap.set(bgReveal, {opacity:1});
     gsap.fromTo(bgRevealImg,
@@ -681,7 +730,7 @@
         onComplete: () => {
           // slow ambient drift once it's settled in, like a living photo
           gsap.to(bgRevealImg, {
-            scale:1.06,
+            scale:1.04,
             duration:22,
             ease:'sine.inOut',
             yoyo:true,
