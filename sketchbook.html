@@ -395,15 +395,29 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function updatePageCounter(curIndex) {
+    const total = pageFlip ? pageFlip.getPageCount() : 8;
+    if (curIndex <= 0) {
+      pageNum.textContent = `1 / ${total}`;
+    } else if (curIndex >= total - 1) {
+      pageNum.textContent = `${total} / ${total}`;
+    } else {
+      const leftIdx = (curIndex % 2 === 1) ? curIndex : curIndex - 1;
+      const leftPage = leftIdx + 1;
+      const rightPage = Math.min(leftIdx + 2, total);
+      pageNum.textContent = `${leftPage}-${rightPage} / ${total}`;
+    }
+  }
+
   pageFlip.loadFromHTML(document.querySelectorAll('.book-page'));
 
   pageFlip.on('flip', (e) => {
-    pageNum.textContent = `${e.data + 1} / ${pageFlip.getPageCount()}`;
+    updatePageCounter(e.data);
     updateScaleAndCentering();
   });
 
   pageFlip.on('init', () => {
-    pageNum.textContent = `1 / ${pageFlip.getPageCount()}`;
+    updatePageCounter(0);
     updateScaleAndCentering();
   });
 
