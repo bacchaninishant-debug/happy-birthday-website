@@ -136,6 +136,14 @@ body {
     }
   }, { passive: false });
 
+  // Prevent mobile touch scrolling before unlock
+  window.addEventListener('touchmove', function(e) {
+    if (!isBirthdayUnlocked) {
+      e.preventDefault();
+      window.scrollTo(0, 0);
+    }
+  }, { passive: false });
+
   // Keep scroll locked at 0 before unlock
   window.addEventListener('scroll', function() {
     if (!isBirthdayUnlocked && window.scrollY > 0) {
@@ -149,6 +157,7 @@ body {
       unlock();
     }
     if (event.data && event.data.type === 'SCROLL_TO_SECTION_2') {
+      if (!isBirthdayUnlocked) return;
       unlock();
       setTimeout(function() {
         const s2 = document.getElementById('section-2');

@@ -1234,13 +1234,48 @@
     showingA = !showingA;
   }, 3200);
 
+  function pulseHint() {
+    const hint = document.getElementById('clickHint');
+    const btn = document.getElementById('triggerBtn');
+    if (hint && typeof gsap !== 'undefined') {
+      gsap.killTweensOf(hint);
+      gsap.fromTo(hint,
+        { scale: 1 },
+        { scale: 1.15, duration: 0.16, yoyo: true, repeat: 3, ease: 'power2.inOut' }
+      );
+    }
+    if (btn && typeof gsap !== 'undefined') {
+      gsap.killTweensOf(btn);
+      gsap.fromTo(btn,
+        { scale: 1 },
+        { scale: 1.06, duration: 0.16, yoyo: true, repeat: 3, ease: 'power2.inOut' }
+      );
+    }
+  }
+
+  // Allow clicking on "✨ Tap 14 to Celebrate ✨" pill to trigger reveal as well
+  const clickHintEl = document.getElementById('clickHint');
+  if (clickHintEl) {
+    clickHintEl.style.cursor = 'pointer';
+    clickHintEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!revealed && typeof triggerBtn !== 'undefined') {
+        triggerBtn.click();
+      }
+    });
+  }
+
   window.scrollNext = function() {
+    if (!revealed) {
+      pulseHint();
+      return;
+    }
     try {
       window.parent.postMessage({ type: 'SCROLL_TO_SECTION_2' }, '*');
     } catch (e) {}
   };
 
-  // Mobile smooth swipe-up gesture to advance to Section 2
+  // Mobile smooth swipe-up gesture to advance to Section 2 - ONLY when 14 has been tapped & revealed
   let bdayTouchStartY = 0;
   let bdayTouchStartTime = 0;
   window.addEventListener('touchstart', (e) => {
@@ -1255,8 +1290,19 @@
       const dy = e.changedTouches[0].clientY - bdayTouchStartY;
       const dt = Date.now() - bdayTouchStartTime;
       if (dy < -45 && dt < 700) {
-        window.scrollNext();
+        if (revealed) {
+          window.scrollNext();
+        } else {
+          pulseHint();
+        }
       }
+    }
+  }, { passive: true });
+
+  // Mouse wheel scroll indicator before reveal
+  window.addEventListener('wheel', (e) => {
+    if (!revealed && e.deltaY > 0) {
+      pulseHint();
     }
   }, { passive: true });
 </script>
