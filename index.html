@@ -83,25 +83,29 @@ body {
   }
 }
 
-/* PC / Laptop Screen Gallery: ensure all photos are full portrait (3:4) and not cut off */
+/* Grid Gallery: Restore full PC functionality with perfectly tailored photo framing */
 #section-gallery img {
-  aspect-ratio: 3 / 4 !important;
   object-fit: cover !important;
-  object-position: center 20% !important;
+  border-radius: 6px !important;
 }
+
+/* Individual tailored photo framing so every face is perfectly centered on all screens */
+#section-gallery img[src*="girl1.jpg"]  { object-position: center 40% !important; }
+#section-gallery img[src*="girl2.jpg"]  { object-position: center 20% !important; }
+#section-gallery img[src*="girl3.jpg"]  { object-position: center 25% !important; }
+#section-gallery img[src*="girl4.jpg"]  { object-position: center 45% !important; }
+#section-gallery img[src*="girl5.jpg"]  { object-position: center 25% !important; }
+#section-gallery img[src*="girl6.jpg"]  { object-position: center 80% !important; }
+#section-gallery img[src*="girl7.jpg"]  { object-position: center 75% !important; }
+#section-gallery img[src*="girl8.jpg"]  { object-position: center 65% !important; }
+#section-gallery img[src*="girl9.jpg"]  { object-position: center 25% !important; }
+#section-gallery img[src*="girl10.jpg"] { object-position: center 25% !important; }
+#section-gallery img[src*="girl11.jpg"] { object-position: center 50% !important; }
+#section-gallery img[src*="/girl.jpg"]  { object-position: center 30% !important; }
 
 @media (min-width: 769px) {
   #section-gallery img {
-    aspect-ratio: 3 / 4 !important;
-    object-fit: cover !important;
-    object-position: center 20% !important;
-    border-radius: 8px !important;
-  }
-  #section-gallery [style*="transform-origin"],
-  #section-gallery [style*="transformOrigin"] {
-    max-width: 480px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
+    aspect-ratio: 4 / 2.5 !important;
   }
 }
 </style>
