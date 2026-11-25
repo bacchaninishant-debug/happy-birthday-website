@@ -82,6 +82,28 @@ body {
     scroll-snap-stop: normal;
   }
 }
+
+/* PC / Laptop Screen Gallery: ensure all photos are full portrait (3:4) and not cut off */
+#section-gallery img {
+  aspect-ratio: 3 / 4 !important;
+  object-fit: cover !important;
+  object-position: center 20% !important;
+}
+
+@media (min-width: 769px) {
+  #section-gallery img {
+    aspect-ratio: 3 / 4 !important;
+    object-fit: cover !important;
+    object-position: center 20% !important;
+    border-radius: 8px !important;
+  }
+  #section-gallery [style*="transform-origin"],
+  #section-gallery [style*="transformOrigin"] {
+    max-width: 480px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+}
 </style>
 <script>
 (function() {
