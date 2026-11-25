@@ -23,5 +23,13 @@ make_sister_stickers.js
 # Root debug screenshots & text files
 /*.png
 /*.txt
+user_photos/
+test_*.js
+snap_*.js
+find_*.js
+replace_*.js
+verify_*.js
+make_*.js
+preview_*.html
 
 .vercel
